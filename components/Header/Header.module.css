@@ -1,0 +1,83 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #333;
+  color: white;
+}
+
+.headerLink {
+  text-decoration: none;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border-radius: 6px;
+  padding: 2px 6px;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.headerLink:hover {
+  color: #fff;
+  background-color: #444;
+}
+
+.navigation {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.navigationItem {
+  display: flex;
+  align-items: center;
+}
+
+.navigationLink {
+  text-decoration: none;
+  color: white;
+  font-size: 1rem;
+  border-radius: 6px;
+  padding: 4px 8px;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.navigationLink:hover {
+  color: #fff;
+  background-color: #444;
+}
+
+.userEmail {
+  color: #ccc;
+  font-size: 0.9rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background-color: #444;
+}
+
+.logoutButton {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+}
+
+.logoutButton:hover:not(:disabled) {
+  background: #c82333;
+}
+
+.logoutButton:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+}
