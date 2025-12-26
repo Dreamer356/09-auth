@@ -1,7 +1,10 @@
 .form {
+  max-width: 720px;          /* ограничиваем ширину */
+  margin: 0 auto;            /* центрируем */
+  padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
 }
 
 .formGroup {
@@ -15,23 +18,29 @@
 .input,
 .textarea,
 .select {
-  margin-top: 4px;
-  padding: 8px 12px;
+  margin-top: 6px;
+  padding: 10px 12px;
   font-size: 14px;
   border: 1px solid #ced4da;
   border-radius: 4px;
   resize: none;
+  width: 100%;
+}
+
+.textarea {
+  min-height: 160px;
 }
 
 .actions {
   display: flex;
-  justify-content: flex-end;
-  gap: 8px;
+  justify-content: flex-end; /* кнопки справа */
+  gap: 12px;
+  margin-top: 16px;
 }
 
 .submitButton {
-  padding: 8px 16px;
-  font-size: 16px;
+  padding: 8px 18px;
+  font-size: 15px;
   background-color: #0d6efd;
   color: #fff;
   border: none;
@@ -50,8 +59,8 @@
 }
 
 .cancelButton {
-  padding: 8px 16px;
-  font-size: 16px;
+  padding: 8px 18px;
+  font-size: 15px;
   background-color: #f8f9fa;
   color: #212529;
   border: 1px solid #ced4da;
