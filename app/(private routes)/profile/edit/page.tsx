@@ -14,14 +14,14 @@ export default function EditProfilePage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Перевіряємо сесію при завантаженні компонента
+    // Check session on component load
     if (isAuthenticated && !user) {
       checkSession();
     }
   }, [isAuthenticated, user, checkSession]);
 
   useEffect(() => {
-    // Встановлюємо початкове значення username
+    // Set initial username value
     if (user?.username) {
       setUsername(user.username);
     }
@@ -36,7 +36,7 @@ export default function EditProfilePage() {
       await updateProfile({ username: username });
       router.push('/profile');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Помилка оновлення профілю');
+      setError(err instanceof Error ? err.message : 'Error updating profile');
     } finally {
       setIsSaving(false);
     }
@@ -63,7 +63,7 @@ export default function EditProfilePage() {
         <h1 className={css.formTitle}>Edit Profile</h1>
 
         <Image
-          src="/api/avatar" // Заглушка для аватара
+          src="/api/avatar" // Avatar placeholder
           alt="User Avatar"
           width={120}
           height={120}
@@ -88,15 +88,15 @@ export default function EditProfilePage() {
           {error && <p className={css.error}>{error}</p>}
 
           <div className={css.actions}>
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className={css.saveButton}
               disabled={isSaving}
             >
               {isSaving ? 'Saving...' : 'Save'}
             </button>
-            <button 
-              type="button" 
+            <button
+              type="button"
               className={css.cancelButton}
               onClick={handleCancel}
             >

@@ -4,20 +4,22 @@ import Link from 'next/link';
 import { getCurrentUserServer } from '../../../lib/api/serverApi';
 
 export const metadata: Metadata = {
-  title: "Профіль користувача | NoteHub",
-  description: "Переглядайте та редагуйте свій профіль користувача. Керуйте особистою інформацією та налаштуваннями акаунту.",
-  keywords: ["профіль", "користувач", "налаштування", "акаунт"],
+  title: "User Profile | NoteHub",
+  description:
+    "View and edit your user profile. Manage personal information and account settings.",
+  keywords: ["profile", "user", "settings", "account"],
   authors: [{ name: "NoteHub Team" }],
   openGraph: {
-    title: "Профіль користувача | NoteHub",
-    description: "Переглядайте та редагуйте свій профіль користувача. Керуйте особистою інформацією та налаштуваннями акаунту.",
+    title: "User Profile | NoteHub",
+    description:
+      "View and edit your user profile. Manage personal information and account settings.",
     url: "https://08-zustand-gilt.vercel.app/profile",
     images: [
       {
         url: "https://ac.goit.global/fullstack/react/notehub-og-meta.jpg",
         width: 1200,
         height: 630,
-        alt: "Профіль користувача - NoteHub",
+        alt: "User Profile - NoteHub",
       },
     ],
   },
@@ -26,7 +28,7 @@ export const metadata: Metadata = {
 export default async function ProfilePage() {
   try {
     const user = await getCurrentUserServer();
-    
+
     return (
       <main className="mainContent">
         <div className="profileCard">
