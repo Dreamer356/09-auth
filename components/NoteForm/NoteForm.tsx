@@ -22,6 +22,7 @@ export default function NoteForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!draft.title.trim() || !draft.content.trim()) return;
 
     createNoteMutation.mutate({
@@ -76,12 +77,12 @@ export default function NoteForm() {
           <option value="All">All</option>
           <option value="Work">Work</option>
           <option value="Personal">Personal</option>
-          <option value="Ideas">Ideas</option>
-          <option value="Important">Important</option>
+          <option value="Meeting">Meeting</option>
+          <option value="Shopping">Shopping</option>
         </select>
       </div>
 
-      <div className={styles.buttonGroup}>
+      <div className={styles.actions}>
         <button
           type="button"
           onClick={() => router.back()}
