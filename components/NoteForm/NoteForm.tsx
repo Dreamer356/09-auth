@@ -44,7 +44,6 @@ export default function NoteForm() {
           value={draft.title}
           onChange={(e) => setDraft({ title: e.target.value })}
           className={styles.input}
-          placeholder="Enter note title"
           required
         />
       </div>
@@ -58,7 +57,6 @@ export default function NoteForm() {
           value={draft.content}
           onChange={(e) => setDraft({ content: e.target.value })}
           className={styles.textarea}
-          placeholder="Enter note content"
           rows={6}
           required
         />
