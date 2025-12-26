@@ -19,7 +19,7 @@ export default function NoteList({ notes }: NoteListProps) {
   });
 
   const handleDelete = (id: string) => {
-    if (confirm("Ви впевнені, що хочете видалити цю нотатку?")) {
+    if (confirm("Are you sure you want to delete this note?")) {
       deleteNoteMutation.mutate(id);
     }
   };
@@ -27,7 +27,7 @@ export default function NoteList({ notes }: NoteListProps) {
   if (notes.length === 0) {
     return (
       <div className={styles.emptyState}>
-        <p>Нотаток не знайдено</p>
+        <p>No notes found</p>
       </div>
     );
   }
@@ -40,21 +40,23 @@ export default function NoteList({ notes }: NoteListProps) {
             <h3 className={styles.noteTitle}>{note.title}</h3>
             <span className={styles.noteTag}>{note.tag}</span>
           </div>
+
           <p className={styles.noteContent}>
             {note.content.length > 150
               ? `${note.content.substring(0, 150)}...`
               : note.content}
           </p>
+
           <div className={styles.noteActions}>
             <Link href={`/notes/${note.id}`} className={styles.viewButton}>
-              Переглянути
+              View
             </Link>
             <button
               onClick={() => handleDelete(note.id)}
               className={styles.deleteButton}
               disabled={deleteNoteMutation.isPending}
             >
-              {deleteNoteMutation.isPending ? "Видалення..." : "Видалити"}
+              {deleteNoteMutation.isPending ? "Deleting..." : "Delete"}
             </button>
           </div>
         </div>
