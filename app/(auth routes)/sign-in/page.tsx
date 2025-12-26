@@ -21,7 +21,7 @@ export default function SignInPage() {
 
     try {
       const user = await login({ email, password });
-      setUser(user); // Save user to the global store
+      setUser(user); // Save user to the global store 1 
       router.push('/profile');
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Login error');
