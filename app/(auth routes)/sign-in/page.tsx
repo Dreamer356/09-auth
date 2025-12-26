@@ -21,10 +21,10 @@ export default function SignInPage() {
 
     try {
       const user = await login({ email, password });
-      setUser(user); // Зберігаємо користувача в глобальному store
+      setUser(user); // Save user to the global store
       router.push('/profile');
-     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Помилка входу');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Login error');
     } finally {
       setIsLoading(false);
     }
@@ -37,37 +37,37 @@ export default function SignInPage() {
 
         <div className={css.formGroup}>
           <label htmlFor="email">Email</label>
-          <input 
-            id="email" 
-            type="email" 
-            name="email" 
-            className={css.input} 
+          <input
+            id="email"
+            type="email"
+            name="email"
+            className={css.input}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            required 
+            required
           />
         </div>
 
         <div className={css.formGroup}>
           <label htmlFor="password">Password</label>
-          <input 
-            id="password" 
-            type="password" 
-            name="password" 
-            className={css.input} 
+          <input
+            id="password"
+            type="password"
+            name="password"
+            className={css.input}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required 
+            required
           />
         </div>
 
         <div className={css.actions}>
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className={css.submitButton}
             disabled={isLoading}
           >
-            {isLoading ? 'Вхід...' : 'Log in'}
+            {isLoading ? 'Signing in...' : 'Log in'}
           </button>
         </div>
 

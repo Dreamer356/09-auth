@@ -7,7 +7,6 @@ import AuthProvider from "../components/AuthProvider/AuthProvider";
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
 
-
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -26,20 +25,22 @@ const roboto = Roboto({
 });
 
 export const metadata: Metadata = {
-  title: "NoteHub - Управління нотатками",
-  description: "Сучасний додаток для створення та управління вашими нотатками з категоріями та пошуком",
-  keywords: ["нотатки", "замітки", "організація", "продуктивність"],
+  title: "NoteHub - Note Management",
+  description:
+    "A modern application for creating and managing your notes with categories and search functionality",
+  keywords: ["notes", "note taking", "organization", "productivity"],
   authors: [{ name: "NoteHub Team" }],
   openGraph: {
-    title: "NoteHub - Управління нотатками",
-    description: "Сучасний додаток для створення та управління вашими нотатками з категоріями та пошуком",
+    title: "NoteHub - Note Management",
+    description:
+      "A modern application for creating and managing your notes with categories and search functionality",
     url: "https://08-zustand-gilt.vercel.app",
     images: [
       {
         url: "https://ac.goit.global/fullstack/react/notehub-og-meta.jpg",
         width: 1200,
         height: 630,
-        alt: "NoteHub - Додаток для управління нотатками",
+        alt: "NoteHub - Note Management Application",
       },
     ],
   },
@@ -59,7 +60,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${roboto.variable} ${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
+      <body
+        className={`${roboto.variable} ${geistSans.variable} ${geistMono.variable}`}
+        suppressHydrationWarning
+      >
         <QueryProvider>
           <AuthProvider>
             <Header />

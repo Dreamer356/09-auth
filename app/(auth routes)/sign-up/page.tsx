@@ -21,11 +21,11 @@ export default function SignUpPage() {
 
     try {
       const user = await register({ email, password });
-      setUser(user); // Зберігаємо користувача в глобальному store
+      setUser(user); // Save user to the global store
       router.push('/profile');
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
-      setError(error.response?.data?.message || 'Помилка реєстрації');
+      setError(error.response?.data?.message || 'Registration error');
     } finally {
       setIsLoading(false);
     }
@@ -35,39 +35,40 @@ export default function SignUpPage() {
     <main className={css.mainContent}>
       <form className={css.form} onSubmit={handleSubmit}>
         <h1 className={css.formTitle}>Sign up</h1>
+
         <div className={css.formGroup}>
           <label htmlFor="email">Email</label>
-          <input 
-            id="email" 
-            type="email" 
-            name="email" 
-            className={css.input} 
+          <input
+            id="email"
+            type="email"
+            name="email"
+            className={css.input}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            required 
+            required
           />
         </div>
 
         <div className={css.formGroup}>
           <label htmlFor="password">Password</label>
-          <input 
-            id="password" 
-            type="password" 
-            name="password" 
-            className={css.input} 
+          <input
+            id="password"
+            type="password"
+            name="password"
+            className={css.input}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required 
+            required
           />
         </div>
 
         <div className={css.actions}>
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className={css.submitButton}
             disabled={isLoading}
           >
-            {isLoading ? 'Реєстрація...' : 'Register'}
+            {isLoading ? 'Registering...' : 'Register'}
           </button>
         </div>
 

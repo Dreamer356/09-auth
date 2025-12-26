@@ -7,7 +7,7 @@ import { useNoteStore } from '../../lib/store/noteStore';
 import styles from './NoteForm.module.css';
 
 export default function NoteForm() {
-const { draft, setDraft, clearDraft } = useNoteStore();
+  const { draft, setDraft, clearDraft } = useNoteStore();
   const router = useRouter();
   const queryClient = useQueryClient();
 
@@ -35,7 +35,7 @@ const { draft, setDraft, clearDraft } = useNoteStore();
     <form onSubmit={handleSubmit} className={styles.form}>
       <div className={styles.formGroup}>
         <label htmlFor="title" className={styles.label}>
-          Заголовок
+          Title
         </label>
         <input
           type="text"
@@ -43,21 +43,21 @@ const { draft, setDraft, clearDraft } = useNoteStore();
           value={draft.title}
           onChange={(e) => setDraft({ title: e.target.value })}
           className={styles.input}
-          placeholder="Введіть заголовок нотатки"
+          placeholder="Enter note title"
           required
         />
       </div>
 
       <div className={styles.formGroup}>
         <label htmlFor="content" className={styles.label}>
-          Зміст
+          Content
         </label>
         <textarea
           id="content"
           value={draft.content}
           onChange={(e) => setDraft({ content: e.target.value })}
           className={styles.textarea}
-          placeholder="Введіть зміст нотатки"
+          placeholder="Enter note content"
           rows={6}
           required
         />
@@ -65,7 +65,7 @@ const { draft, setDraft, clearDraft } = useNoteStore();
 
       <div className={styles.formGroup}>
         <label htmlFor="tag" className={styles.label}>
-          Категорія
+          Category
         </label>
         <select
           id="tag"
@@ -73,11 +73,11 @@ const { draft, setDraft, clearDraft } = useNoteStore();
           onChange={(e) => setDraft({ tag: e.target.value })}
           className={styles.select}
         >
-          <option value="All">Всі</option>
-          <option value="Work">Робота</option>
-          <option value="Personal">Особисте</option>
-          <option value="Ideas">Ідеї</option>
-          <option value="Important">Важливо</option>
+          <option value="All">All</option>
+          <option value="Work">Work</option>
+          <option value="Personal">Personal</option>
+          <option value="Ideas">Ideas</option>
+          <option value="Important">Important</option>
         </select>
       </div>
 
@@ -87,14 +87,14 @@ const { draft, setDraft, clearDraft } = useNoteStore();
           onClick={() => router.back()}
           className={styles.cancelButton}
         >
-          Скасувати
+          Cancel
         </button>
         <button
           type="submit"
           className={styles.submitButton}
           disabled={createNoteMutation.isPending}
         >
-          {createNoteMutation.isPending ? 'Створення...' : 'Створити нотатку'}
+          {createNoteMutation.isPending ? 'Creating...' : 'Create note'}
         </button>
       </div>
     </form>
