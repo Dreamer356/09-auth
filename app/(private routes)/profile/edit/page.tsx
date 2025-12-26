@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
 import { useAuthStore } from '../../../../lib/store/08-zustand';
 import css from './EditProfilePage.module.css';
 
@@ -33,7 +32,7 @@ export default function EditProfilePage() {
     setIsSaving(true);
 
     try {
-      await updateProfile({ username: username });
+      await updateProfile({ username });
       router.push('/profile');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error updating profile');
@@ -62,14 +61,6 @@ export default function EditProfilePage() {
       <div className={css.profileCard}>
         <h1 className={css.formTitle}>Edit Profile</h1>
 
-        <Image
-          src="/api/avatar" // Avatar placeholder
-          alt="User Avatar"
-          width={120}
-          height={120}
-          className={css.avatar}
-        />
-
         <form className={css.profileInfo} onSubmit={handleSubmit}>
           <div className={css.usernameWrapper}>
             <label htmlFor="username">Username:</label>
@@ -82,8 +73,6 @@ export default function EditProfilePage() {
               required
             />
           </div>
-
-          <p>Email: {user?.email || 'user_email@example.com'}</p>
 
           {error && <p className={css.error}>{error}</p>}
 
