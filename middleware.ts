@@ -1,42 +1,51 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { getSessionServer } from './lib/api/serverApi';
 
 // Приватні маршрути
 const privateRoutes = ['/notes', '/profile', '/notes/action/create'];
 
-// Публічні маршрути (тільки для неавторизованих)
+// Публічні маршрути
 const publicRoutes = ['/sign-in', '/sign-up'];
 
 export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const { pathname, origin } = request.nextUrl;
 
   const accessToken = request.cookies.get('accessToken')?.value;
   const refreshToken = request.cookies.get('refreshToken')?.value;
 
   let isAuthenticated = Boolean(accessToken);
 
-  // 🔑 Якщо accessToken відсутній, але є refreshToken — пробуємо оновити сесію
+  // 🔄 Оновлення сесії
   if (!accessToken && refreshToken) {
     try {
-      const response = await getSessionServer();
+      const sessionResponse = await fetch(`${origin}/api/auth/session`, {
+        method: 'GET',
+        headers: {
+          cookie: request.headers.get('cookie') ?? '',
+        },
+      });
+
+      if (!sessionResponse.ok) {
+        throw new Error('Session refresh failed');
+      }
 
       const nextResponse = NextResponse.next();
 
-      // прокидуємо оновлені cookies
-      response.headers.getSetCookie()?.forEach(cookie => {
-        nextResponse.headers.append('Set-Cookie', cookie);
-      });
+      const setCookieHeader = sessionResponse.headers.get('set-cookie');
+
+      if (setCookieHeader) {
+        nextResponse.headers.append('set-cookie', setCookieHeader);
+      }
 
       isAuthenticated = true;
       return nextResponse;
-    } catch (error) {
-      const redirectResponse = NextResponse.redirect(
+    } catch {
+      const redirect = NextResponse.redirect(
         new URL('/sign-in', request.url)
       );
-      redirectResponse.cookies.delete('accessToken');
-      redirectResponse.cookies.delete('refreshToken');
-      return redirectResponse;
+      redirect.cookies.delete('accessToken');
+      redirect.cookies.delete('refreshToken');
+      return redirect;
     }
   }
 
@@ -48,12 +57,10 @@ export async function middleware(request: NextRequest) {
     pathname === route
   );
 
-  // ❌ Неавторизований → приватний маршрут
   if (!isAuthenticated && isPrivateRoute) {
     return NextResponse.redirect(new URL('/sign-in', request.url));
   }
 
-  // ❌ Авторизований → auth-сторінка
   if (isAuthenticated && isPublicRoute) {
     return NextResponse.redirect(new URL('/profile', request.url));
   }
