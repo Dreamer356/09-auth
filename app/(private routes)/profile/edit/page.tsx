@@ -2,31 +2,32 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { useAuthStore } from '../../../../lib/store/08-zustand';
 import css from './EditProfilePage.module.css';
 
 export default function EditProfilePage() {
-  const { user, isAuthenticated, checkSession, isLoading, updateProfile } = useAuthStore();
+  const { user, isAuthenticated, checkSession, isLoading, updateProfile } =
+    useAuthStore();
+
   const [username, setUsername] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
 
   useEffect(() => {
-    // Check session on component load
     if (isAuthenticated && !user) {
       checkSession();
     }
   }, [isAuthenticated, user, checkSession]);
 
   useEffect(() => {
-    // Set initial username value
     if (user?.username) {
       setUsername(user.username);
     }
   }, [user]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
     setIsSaving(true);
@@ -61,8 +62,22 @@ export default function EditProfilePage() {
       <div className={css.profileCard}>
         <h1 className={css.formTitle}>Edit Profile</h1>
 
+        {/* ✅ Avatar */}
+        {user?.avatar && (
+          <div className={css.avatarWrapper}>
+            <Image
+              src={user.avatar}
+              alt="User avatar"
+              width={120}
+              height={120}
+              className={css.avatar}
+            />
+          </div>
+        )}
+
         <form className={css.profileInfo} onSubmit={handleSubmit}>
-          <div className={css.usernameWrapper}>
+          {/* ✅ Username */}
+          <div className={css.fieldWrapper}>
             <label htmlFor="username">Username:</label>
             <input
               id="username"
@@ -71,6 +86,18 @@ export default function EditProfilePage() {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
+            />
+          </div>
+
+          {/* ✅ Email (read-only) */}
+          <div className={css.fieldWrapper}>
+            <label htmlFor="email">Email:</label>
+            <input
+              id="email"
+              type="email"
+              className={css.input}
+              value={user?.email ?? ''}
+              readOnly
             />
           </div>
 
@@ -84,6 +111,7 @@ export default function EditProfilePage() {
             >
               {isSaving ? 'Saving...' : 'Save'}
             </button>
+
             <button
               type="button"
               className={css.cancelButton}
