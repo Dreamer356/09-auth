@@ -1,41 +1,59 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { getSessionServer } from './lib/api/serverApi';
 
-// Приватні маршрути, які потребують авторизації
-const privateRoutes = [
-  '/notes',
-  '/profile',
-  '/notes/action/create'
-];
+// Приватні маршрути
+const privateRoutes = ['/notes', '/profile', '/notes/action/create'];
 
-// Публічні маршрути, доступні тільки неавторизованим
-const publicRoutes = [
-  '/sign-in',
-  '/sign-up'
-];
+// Публічні маршрути (тільки для неавторизованих)
+const publicRoutes = ['/sign-in', '/sign-up'];
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const accessToken = request.cookies.get('accessToken');
-  const refreshToken = request.cookies.get('refreshToken');
-  const isAuthenticated = !!(accessToken || refreshToken);
 
-  // Перевіряємо чи це приватний маршрут
-  const isPrivateRoute = privateRoutes.some(route => 
+  const accessToken = request.cookies.get('accessToken')?.value;
+  const refreshToken = request.cookies.get('refreshToken')?.value;
+
+  let isAuthenticated = Boolean(accessToken);
+
+  // 🔑 Якщо accessToken відсутній, але є refreshToken — пробуємо оновити сесію
+  if (!accessToken && refreshToken) {
+    try {
+      const response = await getSessionServer();
+
+      const nextResponse = NextResponse.next();
+
+      // прокидуємо оновлені cookies
+      response.headers.getSetCookie()?.forEach(cookie => {
+        nextResponse.headers.append('Set-Cookie', cookie);
+      });
+
+      isAuthenticated = true;
+      return nextResponse;
+    } catch (error) {
+      const redirectResponse = NextResponse.redirect(
+        new URL('/sign-in', request.url)
+      );
+      redirectResponse.cookies.delete('accessToken');
+      redirectResponse.cookies.delete('refreshToken');
+      return redirectResponse;
+    }
+  }
+
+  const isPrivateRoute = privateRoutes.some(route =>
     pathname.startsWith(route)
   );
 
-  // Перевіряємо чи це публічний маршрут
-  const isPublicRoute = publicRoutes.some(route => 
+  const isPublicRoute = publicRoutes.some(route =>
     pathname === route
   );
 
-  // Якщо користувач неавторизований і намагається зайти на приватну сторінку
+  // ❌ Неавторизований → приватний маршрут
   if (!isAuthenticated && isPrivateRoute) {
     return NextResponse.redirect(new URL('/sign-in', request.url));
   }
 
-  // Якщо користувач авторизований і намагається зайти на публічну сторінку
+  // ❌ Авторизований → auth-сторінка
   if (isAuthenticated && isPublicRoute) {
     return NextResponse.redirect(new URL('/profile', request.url));
   }
@@ -45,13 +63,6 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
     '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
 };
