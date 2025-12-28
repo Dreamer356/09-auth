@@ -1,43 +1,50 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { getSessionServer } from './lib/api/serverApi';
 
 // Приватні маршрути
-const privateRoutes = ['/notes', '/profile', '/notes/action/create'];
+const privateRoutes = ['/profile', '/notes'];
 
-// Публічні маршрути
-const publicRoutes = ['/sign-in', '/sign-up'];
+// Публічні (auth) маршрути
+const authRoutes = ['/sign-in', '/sign-up'];
 
 export async function middleware(request: NextRequest) {
-  const { pathname, origin } = request.nextUrl;
+  const { pathname } = request.nextUrl;
 
   const accessToken = request.cookies.get('accessToken')?.value;
   const refreshToken = request.cookies.get('refreshToken')?.value;
 
   let isAuthenticated = Boolean(accessToken);
 
-  // 🔄 Оновлення сесії
+  // 🔄 ОНОВЛЕННЯ СЕСІЇ (ВИМОГА ТЗ)
   if (!accessToken && refreshToken) {
     try {
-      const sessionResponse = await fetch(`${origin}/api/auth/session`, {
-        method: 'GET',
-        headers: {
-          cookie: request.headers.get('cookie') ?? '',
-        },
-      });
-
-      if (!sessionResponse.ok) {
-        throw new Error('Session refresh failed');
-      }
+      const response = await getSessionServer();
 
       const nextResponse = NextResponse.next();
 
-      const setCookieHeader = sessionResponse.headers.get('set-cookie');
+      /**
+       * axios response:
+       * response.headers['set-cookie'] -> string[] | undefined
+       * (це безпечно для TS і Vercel)
+       */
+      const setCookies = response.headers['set-cookie'];
 
-      if (setCookieHeader) {
-        nextResponse.headers.append('set-cookie', setCookieHeader);
+      if (Array.isArray(setCookies)) {
+        setCookies.forEach(cookie => {
+          nextResponse.headers.append('Set-Cookie', cookie);
+        });
       }
 
       isAuthenticated = true;
+
+      // ❗ ПІСЛЯ refresh — перевіряємо auth-маршрути
+      if (authRoutes.includes(pathname)) {
+        return NextResponse.redirect(
+          new URL('/profile', request.url)
+        );
+      }
+
       return nextResponse;
     } catch {
       const redirect = NextResponse.redirect(
@@ -53,15 +60,15 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith(route)
   );
 
-  const isPublicRoute = publicRoutes.some(route =>
-    pathname === route
-  );
+  const isAuthRoute = authRoutes.includes(pathname);
 
+  // ❌ Неавтентифікований → приватний маршрут
   if (!isAuthenticated && isPrivateRoute) {
     return NextResponse.redirect(new URL('/sign-in', request.url));
   }
 
-  if (isAuthenticated && isPublicRoute) {
+  // ❌ Автентифікований → auth-маршрут
+  if (isAuthenticated && isAuthRoute) {
     return NextResponse.redirect(new URL('/profile', request.url));
   }
 
@@ -70,6 +77,9 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/profile/:path*',
+    '/notes/:path*',
+    '/sign-in',
+    '/sign-up',
   ],
 };
